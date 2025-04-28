@@ -1,0 +1,16 @@
+{
+    "model": {
+        "name": "Transolver",
+        "args":{
+            "geotype": "unstructured",
+            "fun_dim": 1,
+            "space_dim": 2,
+            "out_dim": 1,
+            "n_hidden": 256,
+            "n_heads": 8,
+            "n_layers": 8,
+            "mlp_ratio": 2,
+            "slice_num": 32
+        }
+    }
+}

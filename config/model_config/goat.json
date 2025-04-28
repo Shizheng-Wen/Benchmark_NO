@@ -1,0 +1,44 @@
+{
+    "model": {
+        "name": "goat2d_fx",
+        "latent_tokens_size": [64, 64],
+        "args": {
+            "magno": {
+                "gno_coord_dim": 2,
+                "gno_radius": 0.033,
+                "projection_channels": 256,
+                "in_gno_channel_mlp_hidden_layers": [64,64,64],
+                "out_gno_channel_mlp_hidden_layers": [64,64],
+                "lifting_channels": 32,
+                "use_attn": true,
+                "attention_type": "cosine",
+                "use_geoembed": true,
+                "embedding_method": "statistical",
+                "precompute_edges": false
+            },
+            "transformer": {
+                "patch_size": 8,
+                "hidden_size": 256,
+                "use_attn_norm": true,
+                "use_ffn_norm": true,
+                "norm_eps": 1e-06,
+                "num_layers": 5,
+                "positional_embedding": "rope",
+                 "use_long_range_skip": true,
+                "attn_config": {
+                    "hidden_size": 256,
+                    "num_heads": 8,
+                    "num_kv_heads": 8,
+                    "use_conditional_norm": false,
+                    "cond_norm_hidden_size": 4,
+                    "atten_dropout": 0.2
+                },
+                "ffn_config": {
+                    "hidden_size": 1024,
+                    "use_conditional_norm": false,
+                    "cond_norm_hidden_size": 4
+                }
+            }
+        }
+    }
+}
