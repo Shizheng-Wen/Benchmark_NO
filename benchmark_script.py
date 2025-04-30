@@ -528,7 +528,7 @@ def benchmark_scalability(
                                         initial_bs=10, min_bs=1)
                 max_trn_bs = find_max_bs(model, ref_sample, adapter=adapter,
                                         mode="training",  device=device,
-                                        initial_bs=10, min_bs=1)
+                                        initial_bs=100, min_bs=1)
                 print(f"   Max BS  | inf {max_inf_bs} | train {max_trn_bs}")
                 
                 inf_sps, inf_peak = measure_throughput(model, ref_sample, max_inf_bs,
@@ -618,6 +618,23 @@ SWEEPS = {
         },
     },
 
+    "GINO":{
+        "model_scale": {
+            "grid_sizes": [16431],
+            "model_variants": [
+                # {"args.fno_hidden_channels": 64},
+                # {"args.fno_hidden_channels": 128},
+                # {"args.fno_hidden_channels": 256},
+                # {"args.fno_hidden_channels": 512},
+                # {"args.fno_hidden_channels": 1024},
+            ],
+        },
+        "input_scale": {
+            "grid_sizes": [500000],
+            "model_variants": [{"args.fno_in_channels": 128}],
+        },
+    },
+
     "GNOT":{
         "model_scale": {
             "grid_sizes": [16431],
@@ -639,31 +656,31 @@ SWEEPS = {
         "model_scale": {
             "grid_sizes": [16431],
             "model_variants": [
-        #         {
-        #             "args.args.transformer.hidden_size": 64,
-        #             "args.args.transformer.attn_config.hidden_size": 64,
-        #             "args.args.transformer.ffn_config.hidden_size": 256
-        #             },
-        #         {
-        #             "args.args.transformer.hidden_size": 128,
-        #             "args.args.transformer.attn_config.hidden_size": 128,
-        #             "args.args.transformer.ffn_config.hidden_size": 512
-        #             },
-        #         {
-        #             "args.args.transformer.hidden_size": 512,
-        #             "args.args.transformer.attn_config.hidden_size": 512,
-        #             "args.args.transformer.ffn_config.hidden_size": 2048
-        #             },
-        #         {
-        #             "args.args.transformer.hidden_size": 1024,
-        #             "args.args.transformer.attn_config.hidden_size": 1024,
-        #             "args.args.transformer.ffn_config.hidden_size": 4096
-        #             },
-        #         {
-        #             "args.args.transformer.hidden_size": 2048,
-        #             "args.args.transformer.attn_config.hidden_size": 2048,
-        #             "args.args.transformer.ffn_config.hidden_size": 8192
-        #             },
+                {
+                    "args.args.transformer.hidden_size": 64,
+                    "args.args.transformer.attn_config.hidden_size": 64,
+                    "args.args.transformer.ffn_config.hidden_size": 256
+                    },
+                {
+                    "args.args.transformer.hidden_size": 128,
+                    "args.args.transformer.attn_config.hidden_size": 128,
+                    "args.args.transformer.ffn_config.hidden_size": 512
+                    },
+                {
+                    "args.args.transformer.hidden_size": 512,
+                    "args.args.transformer.attn_config.hidden_size": 512,
+                    "args.args.transformer.ffn_config.hidden_size": 2048
+                    },
+                {
+                    "args.args.transformer.hidden_size": 1024,
+                    "args.args.transformer.attn_config.hidden_size": 1024,
+                    "args.args.transformer.ffn_config.hidden_size": 4096
+                    },
+                {
+                    "args.args.transformer.hidden_size": 2048,
+                    "args.args.transformer.attn_config.hidden_size": 2048,
+                    "args.args.transformer.ffn_config.hidden_size": 8192
+                    },
             ],
         },
         "input_scale": {
@@ -764,14 +781,14 @@ def main(config_path, run_scalability=False):
         nbytes = sum(
             [p.numel() * 2 * p.element_size() if p.is_complex() else p.numel() * p.element_size() for p in model.parameters()]
             )
-        print(f"Number of parameters: {nparam}")
+        print(f"-> Model ready ({nparam:.2f} M params)")
 
         # --- 5. Mersure the performance ---
         ref_dummy_sample = get_batch_structure_adapter(val_ds)
         max_inf_bs = find_max_bs(model, ref_dummy_sample, adapter=adapter,
-                                mode='inference', device=device, initial_bs=8000, min_bs=64)
+                                mode='inference', device=device, initial_bs=935, min_bs=64)
         max_train_bs = find_max_bs(model, ref_dummy_sample, adapter=adapter,
-                                mode='training', device=device, initial_bs=4000, min_bs=1)
+                                mode='training', device=device, initial_bs=1000, min_bs=1)
 
         print("\n[2] Benchmarking throughput / latency...\n")
         ## --- Throughput @ Max BS ---
@@ -799,7 +816,7 @@ def main(config_path, run_scalability=False):
             f"peak mem {train_lat_peak:.1f} MB")
 
         results["metrics"].update({
-            "nparam": round(n_params, 2),
+            "nparam": round(nparam, 2),
             "max_inf_bs":   max_inf_bs,
             "max_train_bs": max_train_bs,
             "throughput_inf_sps":   inf_tput,

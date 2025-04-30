@@ -1,0 +1,19 @@
+{
+    "model": {
+        "name": "GINO",
+        "input_channels": 1,
+        "output_channels": 1,
+        "adapter": "gino",
+        "args":{
+            "gno_coord_dim": 2,
+            "projection_channels": 256,
+            "in_gno_channel_mlp_hidden_layers": [64, 64, 64],
+            "out_gno_channel_mlp_hidden_layers": [64, 64],
+            "fno_hidden_channels": 64,
+            "fno_n_modes": [16, 16],
+            "lifting_channels": 256,
+            "fno_n_layers":5,
+            "gno_radius": 0.033
+        }
+    }
+}

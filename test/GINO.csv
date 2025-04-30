@@ -1,0 +1,2 @@
+nparam,max_inf_bs,max_train_bs,throughput_inf_sps,throughput_train_sps,latency_inf_ms,latency_train_ms,peak_mem_inf_mb,peak_mem_train_mb
+3.67,800,470,3430.7389012539365,3487.1996413099837,8.769689331054687,20.80955322265625,29827.1875,31891.6083984375

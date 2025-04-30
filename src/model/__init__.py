@@ -4,6 +4,7 @@ from omegaconf import OmegaConf
 
 from src.model import Transolver, GNOT
 from .goat2d_fx import GOAT2D_FX
+from .GINO import GINO
 
 def merge_config(default_config_class, user_config):
     default_config_struct = OmegaConf.structured(default_config_class)
@@ -19,7 +20,8 @@ def init_model(
     supported_models = [
         "transolver",
         "gnot",
-        "goat2d_fx"
+        "goat2d_fx",
+        "gino"
     ]
 
     assert model.lower() in supported_models, (
@@ -37,6 +39,12 @@ def init_model(
             input_size = input_size,
             output_size = output_size,
             config = config
+        )
+    elif model.lower() == "gino":
+        return GINO(
+            in_channels = input_size,
+            out_channels = output_size,
+            **config
         )
     else:
         raise ValueError(f"model {model} not supported currently!")
