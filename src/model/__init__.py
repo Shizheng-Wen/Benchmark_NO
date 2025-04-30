@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from typing import Tuple, Optional, Union
 from omegaconf import OmegaConf
 
-from src.models import Transolver, GNOT
+from src.model import Transolver, GNOT
+from .goat2d_fx import GOAT2D_FX
 
 def merge_config(default_config_class, user_config):
     default_config_struct = OmegaConf.structured(default_config_class)
@@ -17,7 +18,8 @@ def init_model(
                 ):
     supported_models = [
         "transolver",
-        "gnot"
+        "gnot",
+        "goat2d_fx"
     ]
 
     assert model.lower() in supported_models, (
@@ -30,6 +32,12 @@ def init_model(
     elif model.lower() == "gnot":
         gnotconfig = merge_config(GNOT.ModelConfig, config)
         return GNOT.Model(gnotconfig)
+    elif model.lower() == "goat2d_fx":
+        return GOAT2D_FX(
+            input_size = input_size,
+            output_size = output_size,
+            config = config
+        )
     else:
-        raise ValueError(f"model {config} not supported currently!")
+        raise ValueError(f"model {model} not supported currently!")
 

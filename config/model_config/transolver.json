@@ -1,6 +1,9 @@
 {
     "model": {
         "name": "Transolver",
+        "input_channels": 1,
+        "output_channels": 1,
+        "adapter": "transolver",
         "args":{
             "geotype": "unstructured",
             "fun_dim": 1,

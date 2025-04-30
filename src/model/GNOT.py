@@ -4,8 +4,8 @@ import torch
 import torch.nn as nn
 from einops import repeat, rearrange
 from torch.nn import functional as F
-from src.layers.Basic import MLP, LinearAttention, ACTIVATION, trunc_normal_
-from src.layers.Embedding import timestep_embedding, unified_pos_embedding
+from src.model.layers.Basic import MLP, LinearAttention, ACTIVATION, trunc_normal_
+from src.model.layers.Embedding import timestep_embedding, unified_pos_embedding
 
 from dataclasses import dataclass, field
 from typing import Optional

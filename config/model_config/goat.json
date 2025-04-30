@@ -1,42 +1,64 @@
 {
     "model": {
         "name": "goat2d_fx",
-        "latent_tokens_size": [64, 64],
-        "args": {
-            "magno": {
-                "gno_coord_dim": 2,
-                "gno_radius": 0.033,
-                "projection_channels": 256,
-                "in_gno_channel_mlp_hidden_layers": [64,64,64],
-                "out_gno_channel_mlp_hidden_layers": [64,64],
-                "lifting_channels": 32,
-                "use_attn": true,
-                "attention_type": "cosine",
-                "use_geoembed": true,
-                "embedding_method": "statistical",
-                "precompute_edges": false
-            },
-            "transformer": {
-                "patch_size": 8,
-                "hidden_size": 256,
-                "use_attn_norm": true,
-                "use_ffn_norm": true,
-                "norm_eps": 1e-06,
-                "num_layers": 5,
-                "positional_embedding": "rope",
-                 "use_long_range_skip": true,
-                "attn_config": {
-                    "hidden_size": 256,
-                    "num_heads": 8,
-                    "num_kv_heads": 8,
-                    "use_conditional_norm": false,
-                    "cond_norm_hidden_size": 4,
-                    "atten_dropout": 0.2
+        "input_channels": 1,
+        "output_channels": 1,
+        "adapter": "goat",
+        "args":
+        {
+            "latent_tokens_size": [64, 64],
+            "args": {
+                "magno": {
+                    "use_gno": true,
+                    "gno_coord_dim": 2,
+                    "node_embedding": false,
+                    "gno_radius": 0.033,
+                    "gno_use_open3d": false,
+                    "gno_use_torch_scatter": true,
+                    "lifting_channels": 32,
+                    "in_gno_channel_mlp_hidden_layers": [64,64,64],
+                    "in_gno_transform_type": "linear",
+                    "projection_channels": 256,
+                    "out_gno_channel_mlp_hidden_layers": [64,64],
+                    "out_gno_transform_type": "linear",
+                    "scales": [1.0],
+                    "use_scale_weights": false,
+                    "use_attn": true,
+                    "attention_type": "cosine",
+                    "use_geoembed": true,
+                    "embedding_method": "statistical",
+                    "pooling": "max",
+                    "sampling_strategy": null,
+                    "max_neighbors": null,
+                    "sample_ratio": null,
+                    "neighbor_strategy": "radius",
+                    "precompute_edges": false
                 },
-                "ffn_config": {
-                    "hidden_size": 1024,
-                    "use_conditional_norm": false,
-                    "cond_norm_hidden_size": 4
+                "transformer": {
+                    "patch_size": 2,
+                    "hidden_size": 256,
+                    "use_attn_norm": true,
+                    "use_ffn_norm": true,
+                    "norm_eps": 1e-06,
+                    "num_layers": 5,
+                    "positional_embedding": "rope",
+                    "use_long_range_skip": true,
+                    "attn_config": {
+                        "hidden_size": 256,
+                        "num_heads": 8,
+                        "num_kv_heads": 8,
+                        "use_conditional_norm": false,
+                        "cond_norm_hidden_size": 4,
+                        "atten_dropout": 0.2,
+                        "positional_embedding": "rope",
+                        "H": null,
+                        "W": null
+                    },
+                    "ffn_config": {
+                        "hidden_size": 1024,
+                        "use_conditional_norm": false,
+                        "cond_norm_hidden_size": 4
+                    }
                 }
             }
         }

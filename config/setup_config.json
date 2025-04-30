@@ -1,0 +1,20 @@
+{
+    "basics":
+    {
+        "device": "cuda:0"
+    } ,
+    "dataset": 
+    {
+        "name": "Poisson-C-Sines",
+        "metaname": "rigno-unstructured/poisson_c_sines",
+        "base_path": "/cluster/work/math/camlab-data/rigno-data/unstructured/",
+        "train_size": 5,
+        "val_size": 2,
+        "test_size": 2,
+        "batch_size": 23,
+        "num_workers": 4,
+        "shuffle": true,
+        "input_grid": null,
+        "rand_dataset": null
+    }
+}

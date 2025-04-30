@@ -1,12 +1,12 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from src.layers.Basic import MLP,trunc_normal_
-from src.layers.Embedding import timestep_embedding, unified_pos_embedding
-from src.layers.Physics_Attention import Physics_Attention_Irregular_Mesh
-from src.layers.Physics_Attention import Physics_Attention_Structured_Mesh_1D
-from src.layers.Physics_Attention import Physics_Attention_Structured_Mesh_2D
-from src.layers.Physics_Attention import Physics_Attention_Structured_Mesh_3D
+from src.model.layers.Basic import MLP,trunc_normal_
+from src.model.layers.Embedding import timestep_embedding, unified_pos_embedding
+from src.model.layers.Physics_Attention import Physics_Attention_Irregular_Mesh
+from src.model.layers.Physics_Attention import Physics_Attention_Structured_Mesh_1D
+from src.model.layers.Physics_Attention import Physics_Attention_Structured_Mesh_2D
+from src.model.layers.Physics_Attention import Physics_Attention_Structured_Mesh_3D
 
 from dataclasses import dataclass, field
 from typing import Optional
