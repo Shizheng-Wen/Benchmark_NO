@@ -103,6 +103,7 @@ def _recursive_update(target: dict, patch: dict):
             _recursive_update(target[k], v)
         else:
             target[k] = v
+
 #######################
 # Init Dataset
 #######################
@@ -393,7 +394,7 @@ def measure_throughput(model,
     train, optimizer = _prepare_model(model, mode, device)
     batch = _make_batch(dummy_sample_structure, bs, device, adapter)
 
-    # 复位显存峰值
+    # reset peak memory
     if device.type == "cuda":
         torch.cuda.reset_peak_memory_stats(device)
         sync = torch.cuda.synchronize
@@ -408,7 +409,7 @@ def measure_throughput(model,
         _step(model, batch, train=train, optimizer=optimizer)
     sync()
 
-    # 正式计时
+    # start timing
     if start_evt: start_evt.record()
     t0 = time.perf_counter()
     for _ in range(measure_iters):
@@ -417,7 +418,7 @@ def measure_throughput(model,
     t1 = time.perf_counter()
     if end_evt:
         end_evt.record(); sync()
-        elapsed = start_evt.elapsed_time(end_evt) / 1e3      # → 秒
+        elapsed = start_evt.elapsed_time(end_evt) / 1e3      # → second
     else:
         elapsed = t1 - t0
 
@@ -455,7 +456,7 @@ def measure_latency(model,
         _step(model, batch, train=train, optimizer=optimizer)
     sync()
 
-    # 计时
+    # timing
     if start_evt: start_evt.record()
     t0 = time.perf_counter()
     for _ in range(measure_iters):
@@ -464,7 +465,7 @@ def measure_latency(model,
     t1 = time.perf_counter()
     if end_evt:
         end_evt.record(); sync()
-        elapsed = start_evt.elapsed_time(end_evt) / 1e3      # → 秒
+        elapsed = start_evt.elapsed_time(end_evt) / 1e3      # → second
     else:
         elapsed = t1 - t0
 
@@ -622,15 +623,15 @@ SWEEPS = {
         "model_scale": {
             "grid_sizes": [16431],
             "model_variants": [
-                # {"args.fno_hidden_channels": 64},
-                # {"args.fno_hidden_channels": 128},
-                # {"args.fno_hidden_channels": 256},
-                # {"args.fno_hidden_channels": 512},
-                # {"args.fno_hidden_channels": 1024},
+                {"args.fno_hidden_channels": 64},
+                {"args.fno_hidden_channels": 128},
+                {"args.fno_hidden_channels": 256},
+                {"args.fno_hidden_channels": 512},
+                {"args.fno_hidden_channels": 1024},
             ],
         },
         "input_scale": {
-            "grid_sizes": [500000],
+            "grid_sizes": [1000, 10000, 50000, 100000, 500000, 1000000],
             "model_variants": [{"args.fno_in_channels": 128}],
         },
     },
