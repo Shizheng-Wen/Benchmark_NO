@@ -1,0 +1,15 @@
+{
+    "model": {
+        "name": "FNO_dse",
+        "input_channels": 1,  
+        "output_channels": 1, 
+        "adapter": "fnodse",  
+        "args": {
+            "modes1": 12,         
+            "modes2": 12,         
+            "width": 48,          
+            "in_channels": 3,    
+            "out_channels": 1     
+        }
+    }
+}

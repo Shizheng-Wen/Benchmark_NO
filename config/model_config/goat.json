@@ -35,7 +35,7 @@
                     "precompute_edges": false
                 },
                 "transformer": {
-                    "patch_size": 2,
+                    "patch_size": 8,
                     "hidden_size": 256,
                     "use_attn_norm": true,
                     "use_ffn_norm": true,

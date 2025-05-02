@@ -1,0 +1,20 @@
+{
+    "model": {
+        "name": "GeoFNO",
+        "input_channels": 1,            
+        "output_channels": 1,           
+        "adapter": "geofno",    
+        "args": {
+            "modes1": 12,           
+            "modes2": 12,           
+            "width": 48,            
+            "in_channels": 3,     
+            "out_channels": 1,      
+            "n_layers": 4,         
+            "is_mesh": true,        
+            "s1": 64,              
+            "s2": 64,               
+            "share_weight": false   
+        }
+    }
+}

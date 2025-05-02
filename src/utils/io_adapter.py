@@ -71,12 +71,56 @@ class GINOAdapter(IOAdapter):
     def to_device(self, batch, device):
         return {k: v.to(device, non_blocking=True) for k, v in batch.items()}
 
+class GeoFNOAdapter(IOAdapter):
+    def collate(self, batch_list):
+        """
+        Collates data and prepares the single input tensor 'x'
+        for GeoFNO, combining input features (if available) and coordinates.
+        Input 'x' shape: (batch, num_points, num_features + 2)
+        """
+        inputs, labels, coords = custom_collate_fn(batch_list)
+    
+        if inputs is not None:
+            assert inputs.shape[:-1] == coords.shape[:-1], \
+                f"Input features shape {inputs.shape[:-1]} must match coordinate shape {coords.shape[:-1]}"
+            model_input_x = torch.cat((inputs, coords), dim=-1)
+        else:
+            print("Warning: No input features ('c') found in batch. Using only coordinates as input 'x' for GeoFNO.")
+            model_input_x = coords
 
+        return {"x": model_input_x, "labels": labels}
+
+    def to_device(self, batch, device):
+        return {k: v.to(device, non_blocking=True) for k, v in batch.items()}
+
+class FNODSEAdapter(IOAdapter):
+    def collate(self, batch_list):
+        """
+        Collates data and prepares the single input tensor 'positions'
+        for FNO_dse, combining input features (if available) and coordinates.
+        Input 'positions' shape: (batch, num_points, num_features + 2)
+        """
+        inputs, labels, coords = custom_collate_fn(batch_list)
+
+        if inputs is not None:
+            assert inputs.shape[:-1] == coords.shape[:-1], \
+                f"Input features shape {inputs.shape[:-1]} must match coordinate shape {coords.shape[:-1]}"
+            model_input_positions = torch.cat((coords, inputs), dim=-1)
+        else:
+            print("Warning: No input features ('c') found in batch. Using only coordinates as input 'positions' for FNO_dse.")
+            model_input_positions = coords 
+
+        return {"positions": model_input_positions, "labels": labels}
+
+    def to_device(self, batch, device):
+        return {k: v.to(device, non_blocking=True) for k, v in batch.items()}
 _ADAPTERS = {
     "default": DefaultAdapter(),
     "transolver": TransolverAdapter(),
     "goat": GoatAdapter(),
     "gino": GINOAdapter(),
+    "geofno": GeoFNOAdapter(),
+    "fnodse": FNODSEAdapter()
     }
 
 def register_adapter(name: str, adapter: IOAdapter):

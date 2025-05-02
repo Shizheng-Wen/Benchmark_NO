@@ -5,6 +5,9 @@ from omegaconf import OmegaConf
 from src.model import Transolver, GNOT
 from .goat2d_fx import GOAT2D_FX
 from .GINO import GINO
+from .GeoFNO import Geo_FNO
+from .FNODSE import FNO_dse
+
 
 def merge_config(default_config_class, user_config):
     default_config_struct = OmegaConf.structured(default_config_class)
@@ -21,7 +24,9 @@ def init_model(
         "transolver",
         "gnot",
         "goat2d_fx",
-        "gino"
+        "gino",
+        "geofno",
+        "fno_dse"
     ]
 
     assert model.lower() in supported_models, (
@@ -45,6 +50,14 @@ def init_model(
             in_channels = input_size,
             out_channels = output_size,
             **config
+        )
+    elif model.lower() == "geofno":
+        return Geo_FNO(
+            configs = config
+        )
+    elif model.lower() == "fno_dse":
+        return FNO_dse(
+            configs = config
         )
     else:
         raise ValueError(f"model {model} not supported currently!")

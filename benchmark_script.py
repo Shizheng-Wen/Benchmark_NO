@@ -526,10 +526,10 @@ def benchmark_scalability(
             # --- Largest BS ---
                 max_inf_bs = find_max_bs(model, ref_sample, adapter=adapter,
                                         mode="inference", device=device,
-                                        initial_bs=10, min_bs=1)
+                                        initial_bs=50, min_bs=1)
                 max_trn_bs = find_max_bs(model, ref_sample, adapter=adapter,
                                         mode="training",  device=device,
-                                        initial_bs=100, min_bs=1)
+                                        initial_bs=10, min_bs=1)
                 print(f"   Max BS  | inf {max_inf_bs} | train {max_trn_bs}")
                 
                 inf_sps, inf_peak = measure_throughput(model, ref_sample, max_inf_bs,
@@ -614,7 +614,7 @@ SWEEPS = {
             ],
         },
         "input_scale": {
-            "grid_sizes": [1000, 10000, 50000, 100000, 500000, 1000000],
+            "grid_sizes": [1000, 10000, 50000, 100000, 500000],
             "model_variants": [{"n_hidden": 256}],
         },
     },
@@ -631,7 +631,7 @@ SWEEPS = {
             ],
         },
         "input_scale": {
-            "grid_sizes": [1000, 10000, 50000, 100000, 500000, 1000000],
+            "grid_sizes": [1000, 10000, 50000, 100000, 500000],
             "model_variants": [{"args.fno_in_channels": 128}],
         },
     },
@@ -648,7 +648,7 @@ SWEEPS = {
             ],
         },
         "input_scale": {
-            "grid_sizes": [1000, 10000, 50000, 100000, 500000, 1000000],
+            "grid_sizes": [1000, 10000, 50000, 100000, 500000],
             "model_variants": [{"args.n_hidden": 128}],
         },
     },
@@ -657,35 +657,35 @@ SWEEPS = {
         "model_scale": {
             "grid_sizes": [16431],
             "model_variants": [
-                {
-                    "args.args.transformer.hidden_size": 64,
-                    "args.args.transformer.attn_config.hidden_size": 64,
-                    "args.args.transformer.ffn_config.hidden_size": 256
-                    },
-                {
-                    "args.args.transformer.hidden_size": 128,
-                    "args.args.transformer.attn_config.hidden_size": 128,
-                    "args.args.transformer.ffn_config.hidden_size": 512
-                    },
-                {
-                    "args.args.transformer.hidden_size": 512,
-                    "args.args.transformer.attn_config.hidden_size": 512,
-                    "args.args.transformer.ffn_config.hidden_size": 2048
-                    },
-                {
-                    "args.args.transformer.hidden_size": 1024,
-                    "args.args.transformer.attn_config.hidden_size": 1024,
-                    "args.args.transformer.ffn_config.hidden_size": 4096
-                    },
-                {
-                    "args.args.transformer.hidden_size": 2048,
-                    "args.args.transformer.attn_config.hidden_size": 2048,
-                    "args.args.transformer.ffn_config.hidden_size": 8192
-                    },
+                # {
+                #     "args.args.transformer.hidden_size": 64,
+                #     "args.args.transformer.attn_config.hidden_size": 64,
+                #     "args.args.transformer.ffn_config.hidden_size": 256
+                #     },
+                # {
+                #     "args.args.transformer.hidden_size": 128,
+                #     "args.args.transformer.attn_config.hidden_size": 128,
+                #     "args.args.transformer.ffn_config.hidden_size": 512
+                #     },
+                # {
+                #     "args.args.transformer.hidden_size": 512,
+                #     "args.args.transformer.attn_config.hidden_size": 512,
+                #     "args.args.transformer.ffn_config.hidden_size": 2048
+                #     },
+                # {
+                #     "args.args.transformer.hidden_size": 1024,
+                #     "args.args.transformer.attn_config.hidden_size": 1024,
+                #     "args.args.transformer.ffn_config.hidden_size": 4096
+                #     },
+                # {
+                #     "args.args.transformer.hidden_size": 2048,
+                #     "args.args.transformer.attn_config.hidden_size": 2048,
+                #     "args.args.transformer.ffn_config.hidden_size": 8192
+                #     },
             ],
         },
         "input_scale": {
-            "grid_sizes": [1000000],
+            "grid_sizes": [500000],
             "model_variants": [
                 {
                     "args.args.transformer.hidden_size": 256,
@@ -693,6 +693,40 @@ SWEEPS = {
                     "args.args.transformer.ffn_config.hidden_size": 1024
                     },
             ],
+        },
+    },
+
+    "GeoFNO": {
+        "model_scale": {
+            "grid_sizes": [16431], 
+            "model_variants": [
+                {"args.width": 32},
+                {"args.width": 64}, # Default
+                {"args.width": 128},
+                {"args.width": 256},
+                {"args.width": 352},
+            ],
+        },
+        "input_scale": {
+            "grid_sizes": [1000, 10000, 50000, 100000, 500000],
+            "model_variants": [{"args.width": 48}],
+        },
+    },
+
+    "FNO_dse": {
+        "model_scale": {
+            "grid_sizes": [16431],
+            "model_variants": [
+                {"args.width": 32},
+                {"args.width": 64}, 
+                {"args.width": 128},
+                {"args.width": 256},
+                {"args.width": 352},
+            ],
+        },
+        "input_scale": {
+            "grid_sizes": [1000, 10000, 50000, 100000, 500000],
+            "model_variants": [{"args.width": 48}],
         },
     }
 }
@@ -787,7 +821,7 @@ def main(config_path, run_scalability=False):
         # --- 5. Mersure the performance ---
         ref_dummy_sample = get_batch_structure_adapter(val_ds)
         max_inf_bs = find_max_bs(model, ref_dummy_sample, adapter=adapter,
-                                mode='inference', device=device, initial_bs=935, min_bs=64)
+                                mode='inference', device=device, initial_bs=2000, min_bs=64)
         max_train_bs = find_max_bs(model, ref_dummy_sample, adapter=adapter,
                                 mode='training', device=device, initial_bs=1000, min_bs=1)
 
