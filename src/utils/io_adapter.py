@@ -1,6 +1,7 @@
 import torch,gc
 from abc import ABC, abstractmethod
 from .scale import rescale
+import copy
 
 def custom_collate_fn(batch):
     """collates data points with coordinates"""
@@ -114,13 +115,29 @@ class FNODSEAdapter(IOAdapter):
 
     def to_device(self, batch, device):
         return {k: v.to(device, non_blocking=True) for k, v in batch.items()}
+
+class RIGNOAdapter(IOAdapter):
+    def __init__(self, rigraph):
+        super().__init__()
+        self.rigraph = rigraph
+
+    def collate(self, batch_list):
+        inputs, labels, coords = custom_collate_fn(batch_list)
+        graph = copy.deepcopy(self.rigraph)
+        
+        return {"graphs": graph, "pndata": inputs, "labels": labels}
+
+    def to_device(self, batch, device):
+        return {k: v.to(device, non_blocking=True) for k, v in batch.items()}
+
 _ADAPTERS = {
     "default": DefaultAdapter(),
     "transolver": TransolverAdapter(),
     "goat": GoatAdapter(),
     "gino": GINOAdapter(),
     "geofno": GeoFNOAdapter(),
-    "fnodse": FNODSEAdapter()
+    "fnodse": FNODSEAdapter(),
+    "rigno": RIGNOAdapter
     }
 
 def register_adapter(name: str, adapter: IOAdapter):

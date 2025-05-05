@@ -1,0 +1,55 @@
+{
+    "graph":{
+        "periodic": false,
+        "sample_factor": 0.25,
+        "overlap_factor_p2r": 1.0,
+        "overlap_factor_r2p": 2.0,
+        "regional_level": 6,
+        "add_dummy_node":false,
+        "with_additional_info": true,
+        "regional_points": null
+    },
+
+    "model": {
+        "name": "rigno",
+        "input_channels": 1,
+        "output_channels": 1,
+        "drop_edge": 0.5, 
+        "use_conditional_norm": false,
+        "variable_mesh": false,
+        "adapter": "rigno",  
+        "args": {
+            "deepgnn":{
+                "node_latent_size": 64,
+                "edge_latent_size": 64,
+                "num_message_passing_steps": 12,
+                "use_node_encode": true,
+                "use_edge_encode": true,
+                "use_node_decode": true,
+                "use_edge_decode": true,
+                "mpconfig":{
+                    "edge_fn_config":{
+                        "hidden_size": 1024,
+                        "num_layers": 3,
+                        "activation": "swish",
+                        "use_layer_norm": true,
+                        "use_conditional_norm": false,
+                        "cond_norm_hidden_size": 4
+                    },
+                    "node_fn_config":{
+                        "hidden_size": 1024,
+                        "num_layers": 3,
+                        "activation": "swish",
+                        "use_layer_norm": true,
+                        "use_conditional_norm": false,
+                        "cond_norm_hidden_size": 4
+                    },
+                    "aggregate": "mean",
+                    "aggregate_normalization": null,
+                    "use_node_fn": true,
+                    "use_edge_fn": true
+                }
+            }  
+        }
+    }
+}
